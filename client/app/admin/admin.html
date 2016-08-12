@@ -1,0 +1,325 @@
+<div ng-include="'components/navbar/navbarAdmin.html'"></div>
+
+<div class="container">
+  <br><br><br id="messages"><br >
+
+  <div class="page-header" >
+    <h3>Mesaje Primite (Ai {{unreadMessages}} mesaje necitite)</h3>
+  </div>
+
+  <script type="text/ng-template" id="myModalContent.html">
+
+    <div class="modal-header">
+        <h2 class="modal-title">Mesaj de la {{email.senderName}}</h2>
+    </div>
+    <div class="modal-body">
+        <h3>{{email.senderEmail}}</h3>
+        <p>{{email.emailBody}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+
+  </script>
+
+  <script type="text/ng-template" id="equipmentModal.html">
+
+    <div class="modal-header">
+        <h2 class="modal-title">Editează echipament {{equipment.name}}</h2>
+    </div>
+    <div class="modal-body">
+    <form role="form" method="POST" class="form-horizontal" ng-submit="editEquipment()"  >
+      <input type="hidden" name="_csrf"/>
+      <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Nume:</label>
+        <div class="col-sm-8">
+          <input type="text" name="name" id="name" ng-model="equipment.name" autofocus="autofocus" required="required" class="form-control"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Descriere:</label>
+        <div class="col-sm-8">
+          <textarea type="text" name="info" id="info" ng-model="equipment.info" required="required" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="image" class="col-sm-2 control-label">Link pentru imagine:</label>
+        <div class="col-sm-8">
+          <input type="text" name="image" id="image" ng-model="equipment.image" class="form-control"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-4 col-sm-offset-2">
+          <h4>Aliniere imagine:</h4>
+          <input type="radio" name="alignment" ng-model="alignment" id="left-radio" value="Stânga" required="required"/> Stânga
+          <input type="radio" name="alignment" ng-model="alignment" id="right-radio" style="margin-left: 30px;" value="Dreapta" required="required"/> Dreapta
+        </div>
+      </div>
+    </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+
+  </script>
+
+  <script type="text/ng-template" id="picModal.html">
+
+    <div class="modal-header">
+        <h2 class="modal-title">Editează imaginea {{pic.name}}</h2>
+    </div>
+    <div class="modal-body">
+      <img ng-src="{{pic.link}}" style="width: 40vw; margin: 20px; display: block;margin-left: auto; margin-right: auto; max-width: 1000px;"/>
+      <form role="form" method="POST" class="form-horizontal" ng-submit="editPic()"  >
+        <input type="hidden" name="_csrf"/>
+        <div class="form-group">
+          <label for="name" class="col-sm-2 control-label">Nume:</label>
+          <div class="col-sm-8">
+            <input type="text" name="name" id="name" ng-model="pic.name" autofocus="autofocus" required="required" class="form-control"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="image" class="col-sm-2 control-label">Link pentru imagine:</label>
+          <div class="col-sm-8">
+            <input type="text" name="image" id="image" ng-model="pic.link" class="form-control"/>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+
+  </script>
+
+  <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" dismiss-on-timeout="200">
+    {{alert.message}}
+  </uib-alert>
+
+  <div class="well">
+    <div ng-scrollbar class="scrollme" is-bar-shown="barShown" rebuild-on="rebuild:me">
+
+      <ul class="list-group" >
+        <li class="list-group-item email-panel" ng-repeat="email in emails | orderBy: 'email.dateSent':true | filter:searchBox">
+
+            <b><a href="#" ng-click="readEmail(email)"><h3 ng-class="email.class">{{email.senderName}}</h3></a></b><br>
+            <a ng-click="deleteEmail(email)" class="trash"><span class="fa fa-trash pull-right"></span></a>
+            <span class="text-muted">{{email.senderEmail}}</span><br><br>
+            <span class = "pull-right">{{email.dateSent}}</span>
+            <br>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <br>
+
+  <div class="form-group">
+    <label for="searchBox" class="col-sm-2 control-label">Căutare: </label>
+    <div class="col-sm-8">
+      <input type="text" name="searchBox" id="searchBox" ng-model="searchBox" class="form-control"/>
+    </div>
+  </div>
+  <br><br>
+
+  <form role="form" method="POST" class="form-horizontal" ng-submit="changeWallpaper(wallpaper)"  >
+    <input type="hidden" name="_csrf"/>
+    <div class="form-group">
+      <label for="image" class="col-sm-2 control-label">Link pentru prima imagine de fundal:</label>
+      <div class="col-sm-8">
+        <input type="text" name="image" id="image" ng-model="wallpaper.link" class="form-control"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-8">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Modifică</button>
+      </div>
+    </div>
+  </form>
+  <br><br>
+
+    <form role="form" method="POST" class="form-horizontal" ng-submit="changeLogo(logo)"  >
+      <input type="hidden" name="_csrf"/>
+      <div class="form-group">
+        <label for="logo" class="col-sm-2 control-label">Link pentru logo:</label>
+        <div class="col-sm-8">
+          <input type="text" name="logo" id="logo" ng-model="logo.link" class="form-control"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Modifică</button>
+        </div>
+      </div>
+    </form>
+    
+    <div id="equipment"><br><br></div>
+
+    <div class="page-header" >
+      <h3>Descriere echipament</h3>
+    </div>
+    <form role="form" method="POST" class="form-horizontal" ng-submit="changeDescription(eqDescription)"  >
+      <input type="hidden" name="_csrf"/>
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Descriere:</label>
+        <div class="col-sm-8">
+          <textarea type="text" name="info" id="info" ng-model="eqDescription.info" required="required" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Adaugă</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="page-header" >
+      <h3>Adaugă echipament</h3>
+    </div>
+    <form role="form" method="POST" class="form-horizontal" ng-submit="addEquipment()"  >
+      <input type="hidden" name="_csrf"/>
+      <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Nume:</label>
+        <div class="col-sm-8">
+          <input type="text" name="name" id="name" ng-model="name" required="required" class="form-control"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description" class="col-sm-2 control-label">Descriere:</label>
+        <div class="col-sm-8">
+          <textarea type="text" name="info" id="info" ng-model="info" required="required" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="image" class="col-sm-2 control-label">Link pentru imagine:</label>
+        <div class="col-sm-8">
+          <input type="text" name="image" id="image" ng-model="image" class="form-control"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-4 col-sm-offset-2">
+          <h4>Aliniere imagine:</h4>
+          <input type="radio" name="alignment" ng-model="alignment" id="left-radio" value="Stânga" required="required"/> Stânga
+          <input type="radio" name="alignment" ng-model="alignment" id="right-radio" style="margin-left: 30px;" value="Dreapta" required="required"/> Dreapta
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Adaugă</button>
+        </div>
+      </div>
+    </form>
+    <br>
+    <div class="form-group">
+      <label for="searchBox2" class="col-sm-2 control-label">Căutare: </label>
+      <div class="col-sm-8">
+        <input type="text" name="searchBox2" id="searchBox2" ng-model="searchBox2" class="form-control"/>
+      </div>
+    </div>
+    <br>
+
+      <div class="page-header">
+        <h3>Lista echipamentelor</h3>
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="equipment in equipments | filter:searchBox2">
+            <strong>{{equipment.name}}</strong><br>
+            <span class="text-muted">{{equipment.info}}</span>
+            <a ng-click="deleteEquipment(equipment)" class="trash"><span class="fa fa-trash pull-right"></span></a>
+            <a ng-click="editEquipment(equipment)" class="trash"><span class="fa fa-edit pull-right"></span></a>
+        </li>
+      </ul>
+
+<div id="images"><br><br></div>
+    <div class="page-header">
+      <h3>Adaugă imagine</h3>
+    </div>
+    <form role="form" method="POST" class="form-horizontal" ng-submit="addPic()"  >
+      <input type="hidden" name="_csrf"/>
+      <div class="form-group">
+        <label for="picName" class="col-sm-2 control-label">Nume (Optional):</label>
+        <div class="col-sm-8">
+          <input type="text" name="picName" id="picName" ng-model="picName" class="form-control"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="picLink" class="col-sm-2 control-label">Link pentru imagine:</label>
+        <div class="col-sm-8">
+          <input type="text" name="picLink" id="picLink" ng-model="picLink" required="required" class="form-control"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Adaugă</button>
+        </div>
+      </div>
+    </form>
+    <br>
+    <div class="form-group">
+      <label for="searchBox3" class="col-sm-2 control-label">Căutare: </label>
+      <div class="col-sm-8">
+        <input type="text" name="searchBox3" id="searchBox3" ng-model="searchBox3" class="form-control"/>
+      </div>
+    </div>
+    <br>
+
+    <div class="container">
+      <div class="row">
+        <div class="page-header" >
+          <h3>Galerie</h3>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-xs-6 thumb" ng-repeat="pic in pics | filter: searchBox3">
+         <a class="thumbnail" ng-click="editPic(pic)" href="#">
+             <img class="img-responsive" ng-src="{{pic.link}}" alt="">
+         </a>
+         <h5 style="text-align: center">{{pic.name}}</h5>
+         <a ng-click="deletePic(pic)" class="trash"><span class="fa fa-trash pull-right"></span></a>
+         <a ng-click="editPic(pic)" class="trash"><span class="fa fa-edit pull-right"></span></a>
+        </div>
+       </div>
+     </div>
+     <div id="contact"><br><br></div>
+     <div class="page-header">
+       <h3>Contact</h3>
+     </div>
+     <form role="form" method="POST" class="form-horizontal" ng-submit="changeSocials()" >
+       <input type="hidden" name="_csrf"/>
+       <div class="form-group">
+         <label for="phone" class="col-sm-2 control-label">Telefon:</label>
+         <div class="col-sm-8">
+           <input type="text" name="phone" id="phone" ng-model="phone.info" class="form-control"/>
+         </div>
+       </div>
+       <div class="form-group">
+         <label for="email" class="col-sm-2 control-label">Email:</label>
+         <div class="col-sm-8">
+           <input type="text" name="email" id="email" ng-model="email.info" class="form-control"/>
+         </div>
+       </div>
+       <div class="form-group">
+         <label for="facebook" class="col-sm-2 control-label">Facebook:</label>
+         <div class="col-sm-8">
+           <input type="text" name="facebook" id="facebook" ng-model="facebook.info" class="form-control"/>
+         </div>
+       </div>
+       <div class="form-group">
+         <label for="gplus" class="col-sm-2 control-label">Google Plus:</label>
+         <div class="col-sm-8">
+           <input type="text" name="gplus" id="gplus" ng-model="gplus.info" class="form-control"/>
+         </div>
+       </div>
+
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-8">
+           <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Salvează</button>
+         </div>
+       </div>
+     </form>
+     <br><br><br><br>
+</div>
